@@ -1,0 +1,945 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Morphing — Innovation Inraces</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#020207;--bg2:#05050e;--bg3:#0a0a16;--bg4:#10101e;
+  --card:#0c0c18;--card2:#121220;
+  --text:#f0f0ff;--text2:#9090b8;--text3:#55557a;
+  --accent:#7c3aff;--accent2:#a855f7;--accent3:#5b21b6;
+  --accent-hot:#ff3a7c;--accent-gold:#f59e0b;
+  --green:#22c55e;--red:#ef4444;
+  --border:#1a1a32;--border2:#252540;--border3:#333358;
+  --radius:14px;--radius2:20px;--radius3:28px;
+  --glow:rgba(124,58,255,.35);--glow2:rgba(168,85,247,.2);
+}
+@media(prefers-color-scheme:light){
+  :root{
+    --bg:#f0eeff;--bg2:#e8e4ff;--bg3:#ddd8ff;--bg4:#cfc8ff;
+    --card:#ffffff;--card2:#f8f5ff;
+    --text:#0d0820;--text2:#3d3060;--text3:#800080;
+    --accent:#6d28d9;--accent2:#7c3aff;--accent3:#4c1d95;
+    --accent-hot:#e11d6a;--accent-gold:#d97706;
+    --green:#16a34a;--red:#dc2626;
+    --border:#c4b8f0;--border2:#a898e0;--border3:#8878cc;
+    --glow:rgba(109,40,217,.25);--glow2:rgba(124,58,255,.15);
+  }
+}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.page{display:none;min-height:100vh;animation:fadeIn .5s cubic-bezier(.16,1,.3,1)}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ===== LANDING PAGE ===== */
+#page-landing{
+  display:none;align-items:center;justify-content:center;
+  min-height:100vh;text-align:center;padding:2rem;
+  background:var(--bg);position:relative;overflow:hidden;
+}
+#page-landing.active{display:flex;flex-direction:column}
+.landing-glow{
+  position:absolute;width:800px;height:800px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,255,.22) 0%,rgba(168,85,247,.08) 40%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+  animation:glowPulse 4s ease-in-out infinite;
+}
+.landing-glow2{
+  position:absolute;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,58,124,.1) 0%,transparent 70%);
+  top:30%;left:20%;pointer-events:none;animation:glowPulse 6s ease-in-out infinite reverse;
+}
+@keyframes glowPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.8}50%{transform:translate(-50%,-50%) scale(1.15);opacity:1}}
+.grid-lines{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(124,58,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,255,.04) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.logo-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,58,255,.12);border:1px solid rgba(124,58,255,.35);
+  border-radius:100px;padding:8px 20px;font-size:13px;color:var(--accent2);
+  margin-bottom:2rem;letter-spacing:.5px;position:relative;z-index:1;
+  backdrop-filter:blur(10px);
+}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 1.5s infinite;box-shadow:0 0 8px var(--accent2)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.landing-title{
+  font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.05;
+  margin-bottom:1.5rem;letter-spacing:-2px;position:relative;z-index:1;
+}
+.landing-title .line1{display:block;color:var(--text)}
+.landing-title .line2{
+  display:block;
+  background:linear-gradient(135deg,#a855f7 0%,#7c3aff 40%,#ff3a7c 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(168,85,247,.5));
+}
+.landing-sub{
+  font-size:clamp(1rem,2vw,1.2rem);color:var(--text2);
+  max-width:480px;line-height:1.9;margin:0 auto 2.5rem;position:relative;z-index:1;
+}
+.skills-preview{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  max-width:600px;margin:0 auto 3rem;position:relative;z-index:1;
+}
+.skill-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,58,255,.18);border:1.5px solid rgba(168,85,247,.45);
+  border-radius:100px;padding:10px 20px;font-size:15px;font-weight:700;color:#800080;
+  cursor:default;letter-spacing:.2px;
+}
+.btn-start{
+  display:inline-flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#7c3aff,#a855f7);color:#fff;border:none;
+  border-radius:100px;padding:20px 52px;font-size:1.15rem;
+  font-weight:800;font-family:'Tajawal',sans-serif;cursor:pointer;
+  transition:all .25s;letter-spacing:.5px;position:relative;z-index:1;
+  box-shadow:0 0 30px rgba(124,58,255,.5),0 4px 20px rgba(0,0,0,.4);
+}
+.btn-start:hover{transform:scale(1.05) translateY(-2px);box-shadow:0 0 50px rgba(124,58,255,.7),0 8px 30px rgba(0,0,0,.5)}
+.btn-start:active{transform:scale(.98)}
+.btn-start .arrow{font-size:1.4rem;transition:transform .2s}
+.btn-start:hover .arrow{transform:translateX(-5px)}
+.landing-stats{
+  display:flex;gap:2rem;justify-content:center;margin-top:2.5rem;
+  position:relative;z-index:1;
+}
+.stat-item{text-align:center}
+.stat-num{font-size:1.8rem;font-weight:900;color:var(--accent2);display:block;line-height:1}
+.stat-lbl{font-size:12px;color:var(--text3);margin-top:4px}
+.landing-meta{margin-top:2rem;font-size:12.5px;color:var(--text3);position:relative;z-index:1}
+.landing-meta span{color:var(--text2)}
+
+/* ===== QUESTIONS PAGE ===== */
+#page-questions{padding:0;background:var(--bg)}
+.q-header{
+  background:linear-gradient(135deg,#7c3aff,#a855f7);border-bottom:1px solid #6020e0;
+  padding:1rem 2rem;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(20px);
+}
+.q-logo{font-weight:900;font-size:1.1rem;color:#DA70D6}
+.q-counter{font-size:14px;font-weight:700;color:#DA70D6}
+.q-progress-wrap{height:3px;background:var(--bg3);width:100%}
+.q-progress-bar{height:100%;background:linear-gradient(90deg,#7c3aff,#a855f7,#ff3a7c);transition:width .5s cubic-bezier(.16,1,.3,1);border-radius:0 3px 3px 0;box-shadow:0 0 8px rgba(168,85,247,.6)}
+.q-body{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.skill-label{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,58,255,.12);border:1px solid rgba(124,58,255,.3);
+  border-radius:100px;padding:7px 18px;font-size:13px;
+  color:var(--accent2);margin-bottom:1.5rem;font-weight:600;
+  box-shadow:0 0 15px rgba(124,58,255,.1);
+}
+.q-card{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:var(--radius2);padding:2.2rem;margin-bottom:1.5rem;
+  box-shadow:0 4px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.04);
+  position:relative;overflow:hidden;
+}
+.q-card::before{
+  content:'';position:absolute;top:0;right:0;width:120px;height:120px;
+  background:radial-gradient(circle at top right,rgba(124,58,255,.08),transparent 70%);
+  pointer-events:none;
+}
+.q-number{font-size:12px;color:var(--text3);margin-bottom:.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.q-text{font-size:1.15rem;font-weight:600;line-height:1.9;color:var(--text);margin-bottom:2rem}
+.options-row{display:flex;gap:6px;justify-content:space-between}
+.opt-btn{
+  flex:1;padding:10px 4px;border-radius:10px;border:1.5px solid var(--border2);
+  background:var(--bg3);color:var(--text2);font-family:'Tajawal',sans-serif;
+  font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;
+}
+.opt-btn .opt-num{font-size:1rem;font-weight:800}
+.opt-btn .opt-label{font-size:9px;opacity:.8;text-align:center;line-height:1.2}
+.opt-btn:hover{transform:translateY(-3px);border-color:var(--accent);background:rgba(124,58,255,.08);box-shadow:0 4px 16px rgba(124,58,255,.2)}
+.opt-btn.sel-1,.opt-btn.sel-2{background:#2d0a0a !important;border-color:#ef4444 !important;color:#fca5a5 !important;box-shadow:0 0 12px rgba(239,68,68,.2) !important}
+.opt-btn.sel-3{background:#2a2200 !important;border-color:#f59e0b !important;color:#fcd34d !important;box-shadow:0 0 12px rgba(245,158,11,.2) !important}
+.opt-btn.sel-4,.opt-btn.sel-5{background:#0a2d1a !important;border-color:#22c55e !important;color:#86efac !important;box-shadow:0 0 12px rgba(34,197,94,.2) !important}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.btn-nav{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:100px;padding:11px 28px;font-family:'Tajawal',sans-serif;
+  font-size:15px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;
+}
+.btn-nav:hover{background:var(--card2);color:var(--text);border-color:var(--border3)}
+.btn-nav.primary{background:linear-gradient(135deg,#7c3aff,#a855f7);color:#fff;border-color:transparent;box-shadow:0 0 20px rgba(124,58,255,.4)}
+.btn-nav.primary:hover{box-shadow:0 0 30px rgba(124,58,255,.6);transform:scale(1.03)}
+.btn-nav:disabled{opacity:.25;cursor:not-allowed;transform:none !important;box-shadow:none !important}
+
+/* ===== DATA PAGE ===== */
+#page-data{display:none;align-items:center;justify-content:center;min-height:100vh;padding:2rem;background:var(--bg);position:relative;overflow:hidden}
+#page-data::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,255,.15),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+#page-data.active{display:flex}
+.data-card{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:var(--radius3);padding:2.8rem;max-width:520px;width:100%;
+  position:relative;z-index:1;
+  box-shadow:0 0 60px rgba(124,58,255,.15),0 20px 60px rgba(0,0,0,.6);
+}
+.data-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7c3aff,#a855f7,#ff3a7c);border-radius:var(--radius3) var(--radius3) 0 0}
+.data-title{font-size:1.7rem;font-weight:900;margin-bottom:.5rem;color:var(--text)}
+.data-sub{color:var(--text2);font-size:15px;margin-bottom:2rem;line-height:1.8}
+.form-group{margin-bottom:1.2rem}
+.form-label{display:block;font-size:14px;font-weight:700;color:var(--text2);margin-bottom:6px}
+.form-input{
+  width:100%;background:var(--bg2);border:1.5px solid var(--border2);
+  border-radius:var(--radius);padding:13px 16px;font-family:'Tajawal',sans-serif;
+  font-size:15px;color:var(--text);outline:none;transition:all .2s;
+}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,255,.15)}
+.btn-submit{
+  width:100%;background:linear-gradient(135deg,#7c3aff,#a855f7);color:#fff;border:none;
+  border-radius:100px;padding:17px;font-family:'Tajawal',sans-serif;
+  font-size:1rem;font-weight:800;cursor:pointer;transition:all .25s;margin-top:.5rem;
+  box-shadow:0 0 25px rgba(124,58,255,.4);
+}
+.btn-submit:hover{box-shadow:0 0 40px rgba(124,58,255,.6);transform:scale(1.02)}
+
+/* ===== RESULTS PAGE ===== */
+#page-results{display:none;padding-bottom:4rem;background:var(--bg)}
+#page-results.active{display:block}
+.res-hero{
+  background:linear-gradient(180deg,rgba(124,58,255,.18) 0%,transparent 100%);
+  border-bottom:1px solid var(--border2);
+  padding:3.5rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+.res-hero::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,255,.18),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.persona-emoji{font-size:4.5rem;margin-bottom:1rem;display:block;position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(168,85,247,.5))}
+.persona-title{font-size:2.4rem;font-weight:900;margin-bottom:.5rem;position:relative;z-index:1;color:#DA70D6}
+.total-score{
+  display:inline-flex;align-items:baseline;gap:6px;
+  background:rgba(124,58,255,.15);border:2px solid rgba(168,85,247,.5);
+  border-radius:100px;padding:10px 28px;margin:1rem auto;font-weight:700;
+  position:relative;z-index:1;box-shadow:0 0 20px rgba(124,58,255,.2);
+}
+.total-score .big{font-size:2.4rem;color:#DA70D6;font-weight:900}
+.total-score .small{font-size:1.1rem;color:#DA70D6;font-weight:700}
+.level-badge{
+  display:inline-block;border-radius:100px;padding:7px 22px;
+  font-size:14px;font-weight:800;margin-top:.5rem;position:relative;z-index:1;
+}
+.res-body{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem}
+.section-title{
+  font-size:1.2rem;font-weight:900;color:#DA70D6;margin-bottom:1.3rem;
+  display:flex;align-items:center;gap:10px;letter-spacing:.3px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.5),transparent)}
+
+/* Radar */
+.radar-wrap{
+  background:#C3B1E1;border:1px solid #3a3a60;
+  border-radius:var(--radius2);padding:1.8rem;margin-bottom:2rem;
+  box-shadow:0 4px 30px rgba(0,0,0,.5);
+}
+.radar-inner{max-width:400px;margin:0 auto}
+
+/* Skill bars */
+.skills-grid{display:grid;gap:.9rem;margin-bottom:2rem}
+.skill-bar-card{
+  background:#C3B1E1;border:1px solid #3a3a60;
+  border-radius:var(--radius);padding:1.4rem;
+}
+.skill-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.skill-name{font-size:16px;font-weight:800;color:#1a0a35}
+.skill-score{font-size:1.2rem;font-weight:900;color:#5b21b6}
+.skill-bar-bg{height:8px;background:#0a0a1a;border-radius:100px;overflow:hidden;border:1px solid #252545}
+.skill-bar-fill{height:100%;border-radius:100px;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.skill-advice{
+  margin-top:.9rem;padding:1rem 1.2rem;border-radius:var(--radius);
+  font-size:14.5px;line-height:1.8;display:flex;align-items:flex-start;gap:8px;font-weight:600;
+}
+.skill-advice.strength{background:#14532d;border:2px solid #22c55e;color:#f0fff4}
+.skill-advice.weakness{background:#7f1d1d;border:2px solid #ef4444;color:#fff5f5}
+.skill-advice.neutral{background:#451a03;border:2px solid #f59e0b;color:#fffbeb}
+.advice-icon{font-size:17px;margin-top:2px;flex-shrink:0}
+
+/* Persona card */
+.persona-card{
+  background:#C3B1E1;border:1px solid #3a3a60;
+  border-radius:var(--radius2);padding:2.2rem;margin-bottom:2rem;
+  box-shadow:0 4px 30px rgba(0,0,0,.4);
+}
+.persona-desc{font-size:16px;color:#2d1a4a;line-height:2;margin-bottom:1.5rem;font-weight:500}
+.traits-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem}
+.trait-tag{
+  background:rgba(124,58,255,.25);border:1px solid rgba(168,85,247,.5);
+  border-radius:100px;padding:7px 18px;font-size:14px;font-weight:700;color:#e0c8ff;
+}
+.opening-text{
+  background:rgba(124,58,255,.12);border-right:3px solid #a855f7;
+  border-radius:0 var(--radius) var(--radius) 0;padding:1.3rem 1.5rem;
+  font-size:16px;font-weight:600;color:#1a0a35;line-height:1.9;
+}
+
+/* Strengths/Weaknesses */
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+@media(max-width:600px){.sw-grid{grid-template-columns:1fr}}
+.sw-card{border-radius:var(--radius);padding:1.6rem}
+.sw-card.str{background:#14532d;border:2px solid #22c55e}
+.sw-card.weak{background:#7f1d1d;border:2px solid #ef4444}
+.sw-card h4{font-size:15px;font-weight:900;margin-bottom:.7rem}
+.sw-card.str h4{color:#bbf7d0}
+.sw-card.weak h4{color:#fecaca}
+.sw-card p{font-size:14.5px;line-height:1.85;font-weight:600}
+.sw-card.str p{color:#f0fff4}
+.sw-card.weak p{color:#fff5f5}
+.sw-detail{font-size:13.5px;margin-top:.7rem;font-style:italic;opacity:.9}
+.sw-card.str .sw-detail{color:#a7f3d0}
+.sw-card.weak .sw-detail{color:#fca5a5}
+
+/* AI fingerprint */
+.fingerprint-box{
+  background:#C3B1E1;border:1px solid #3a3a60;
+  border-radius:var(--radius2);padding:2.2rem;margin-bottom:2rem;
+  position:relative;overflow:hidden;
+}
+.fingerprint-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.6),transparent)}
+.fingerprint-text{font-size:16px;color:#2d1a4a;line-height:2;font-weight:500}
+
+/* Exercise box */
+.exercise-box{
+  background:linear-gradient(135deg,rgba(124,58,255,.15),rgba(168,85,247,.08));
+  border:2px solid rgba(168,85,247,.4);border-radius:var(--radius2);
+  padding:2.2rem;margin-bottom:2rem;
+}
+.exercise-title{font-size:1.2rem;font-weight:900;color:#2d1a4a;margin-bottom:1rem}
+.exercise-text{font-size:16px;color:#2d1a4a;line-height:2;font-weight:500}
+
+/* PDF Button */
+.btn-pdf{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#7c3aff,#a855f7);color:#fff;border:none;
+  border-radius:100px;padding:16px 40px;font-size:1rem;font-weight:800;
+  font-family:'Tajawal',sans-serif;cursor:pointer;transition:all .25s;
+  box-shadow:0 0 25px rgba(124,58,255,.4);
+}
+.btn-pdf:hover{box-shadow:0 0 40px rgba(124,58,255,.6);transform:scale(1.03)}
+.btn-pdf:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* Loading */
+.ai-loading{
+  display:flex;align-items:center;gap:10px;
+  color:#a090c8;font-size:14px;margin:1rem 0;
+}
+.dot-spin{display:flex;gap:5px}
+.dot-spin span{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:bounce .7s infinite}
+.dot-spin span:nth-child(2){animation-delay:.15s;background:var(--accent2)}
+.dot-spin span:nth-child(3){animation-delay:.3s;background:var(--accent-hot)}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-7px);opacity:1}}
+
+/* Responsive */
+@media(max-width:600px){
+  .q-body{padding:1.5rem 1rem 3rem}
+  .landing-title{font-size:2.4rem;letter-spacing:-1px}
+  .landing-stats{gap:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LANDING PAGE ===== -->
+<div id="page-landing" class="page active">
+  <div class="landing-glow"></div>
+  <div class="landing-glow2"></div>
+  <div class="grid-lines"></div>
+  <div class="logo-badge">
+    <span class="logo-dot"></span>
+    Innovation Inraces
+  </div>
+  <h1 class="landing-title">
+    <span class="line1">اكتشف شخصيتك</span>
+    <span class="line2">الإبداعية</span>
+  </h1>
+  <p class="landing-sub">28 سؤالاً تكشف لك 7 مهارات تفكير إبداعي، وتحدد شخصيتك الإبداعية من بين 8 شخصيات فريدة</p>
+  <div class="skills-preview">
+    <span class="skill-tag">🌟 خلق التوجه الإبداعي</span>
+    <span class="skill-tag">🔭 تغيير المنظور</span>
+    <span class="skill-tag">🔬 الملاحظة والتركيز</span>
+    <span class="skill-tag">⚡ تحدي الافتراضات</span>
+    <span class="skill-tag">🌊 توليد الاحتمالات</span>
+    <span class="skill-tag">🔗 ربط المفاهيم</span>
+    <span class="skill-tag">🚀 التجريب والفشل</span>
+  </div>
+  <button class="btn-start" onclick="goToQuestions()">
+    اكتشف شخصيتك الإبداعية <span class="arrow">←</span>
+  </button>
+  <div class="landing-stats">
+    <div class="stat-item"><span class="stat-num">28</span><div class="stat-lbl">سؤالاً</div></div>
+    <div class="stat-item"><span class="stat-num">7</span><div class="stat-lbl">مهارات</div></div>
+    <div class="stat-item"><span class="stat-num">8</span><div class="stat-lbl">شخصيات</div></div>
+  </div>
+  <p class="landing-meta">مستوحى من كتاب <span>"النظر للمألوف بطريقة غير مألوفة"</span> لأسامة بدندي</p>
+</div>
+
+<!-- ===== QUESTIONS PAGE ===== -->
+<div id="page-questions" class="page">
+  <div class="q-header">
+    <div class="q-logo">Idea Morphing</div>
+    <div class="q-counter" id="q-counter">السؤال 1 من 28</div>
+  </div>
+  <div class="q-progress-wrap">
+    <div class="q-progress-bar" id="q-progress" style="width:3.57%"></div>
+  </div>
+  <div class="q-body">
+    <div class="skill-label" id="q-skill-label">🌟 خلق التوجه الإبداعي</div>
+    <div class="q-card">
+      <div class="q-number" id="q-num">السؤال 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options-row" id="q-options"></div>
+    </div>
+    <div class="q-nav">
+      <button class="btn-nav" id="btn-prev" onclick="prevQ()" disabled>السابق</button>
+      <button class="btn-nav primary" id="btn-next" onclick="nextQ()" disabled>التالي</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DATA PAGE ===== -->
+<div id="page-data" class="page">
+  <div class="data-card">
+    <div style="font-size:2.8rem;margin-bottom:1rem;filter:drop-shadow(0 0 15px rgba(168,85,247,.5))">🎉</div>
+    <h2 class="data-title">أنهيت الاختبار!</h2>
+    <p class="data-sub">خطوة أخيرة — أدخل بياناتك لاكتشاف شخصيتك الإبداعية وتقريرك التفصيلي</p>
+    <div class="form-group">
+      <label class="form-label">الاسم الكامل *</label>
+      <input class="form-input" id="inp-name" type="text" placeholder="اكتب اسمك هنا">
+    </div>
+    <div class="form-group">
+      <label class="form-label">البريد الإلكتروني *</label>
+      <input class="form-input" id="inp-email" type="email" placeholder="example@email.com" style="direction:ltr">
+    </div>
+    <div class="form-group">
+      <label class="form-label">المسمى الوظيفي</label>
+      <input class="form-input" id="inp-job" type="text" placeholder="مثلاً: مدير مشاريع، مصمم، ...">
+    </div>
+    <button class="btn-submit" onclick="submitData()">اعرض نتيجتي ←</button>
+    <p id="data-err" style="color:var(--red);font-size:13px;margin-top:.8rem;text-align:center"></p>
+  </div>
+</div>
+
+<!-- ===== RESULTS PAGE ===== -->
+<div id="page-results" class="page">
+  <div class="res-hero">
+    <span class="persona-emoji" id="res-emoji"></span>
+    <h1 class="persona-title" id="res-persona-title"></h1>
+    <div class="total-score">
+      <span class="big" id="res-total"></span>
+      <span class="small">/ 70</span>
+    </div>
+    <br>
+    <span class="level-badge" id="res-level"></span>
+  </div>
+  <div class="res-body">
+
+    <h3 class="section-title">📊 مخطط المهارات</h3>
+    <div class="radar-wrap">
+      <div class="radar-inner"><canvas id="radarChart"></canvas></div>
+    </div>
+
+    <h3 class="section-title">🎯 تحليل المهارات السبع</h3>
+    <div class="skills-grid" id="skills-grid"></div>
+
+    <h3 class="section-title">🌟 شخصيتك الإبداعية</h3>
+    <div class="persona-card" id="persona-card"></div>
+
+    <h3 class="section-title">💪 نقاط القوة والضعف</h3>
+    <div class="sw-grid" id="sw-grid"></div>
+
+    <h3 class="section-title">🔮 بصمتك الإبداعية</h3>
+    <div class="fingerprint-box" id="fingerprint-box">
+      <div class="ai-loading" id="fp-loading">
+        <div class="dot-spin"><span></span><span></span><span></span></div>
+        جاري تحليل بصمتك الإبداعية...
+      </div>
+      <p class="fingerprint-text" id="fingerprint-text" style="display:none"></p>
+    </div>
+
+    <h3 class="section-title">🏋️ تمرين تطويري</h3>
+    <div class="exercise-box" id="exercise-box"></div>
+
+    <div style="text-align:center;margin:2rem 0 1rem">
+      <div id="email-status" style="font-size:14px;color:#a090c8;display:flex;align-items:center;justify-content:center;gap:8px">
+        <div class="dot-spin"><span></span><span></span><span></span></div>
+        جاري إرسال النتيجة لإيميلك...
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {skill:"خلق التوجه الإبداعي",emoji:"🌟",text:"أحرص على تخصيص وقت يومي للتفكير في أفكار جديدة وإبداعية.",pos:true},
+  {skill:"خلق التوجه الإبداعي",emoji:"🌟",text:"أجد صعوبة في الانتقال من أسلوب تفكيري المعتاد إلى أساليب مختلفة.",pos:false},
+  {skill:"خلق التوجه الإبداعي",emoji:"🌟",text:"أؤمن بأن الإبداع يمكن تطويره وتعلّمه بالممارسة المستمرة.",pos:true},
+  {skill:"خلق التوجه الإبداعي",emoji:"🌟",text:"أشعر بالتردد عند تجربة أساليب تفكير جديدة وغير مألوفة.",pos:false},
+
+  {skill:"تغيير المنظور",emoji:"🔭",text:"عندما أواجه مشكلة، أحاول النظر إليها من زوايا وأطر مختلفة.",pos:true},
+  {skill:"تغيير المنظور",emoji:"🔭",text:"أجد صعوبة في تخيّل كيف يرى الآخرون نفس الموقف بشكل مختلف.",pos:false},
+  {skill:"تغيير المنظور",emoji:"🔭",text:"أستطيع بسهولة وضع نفسي في مكان شخص آخر لفهم وجهة نظره.",pos:true},
+  {skill:"تغيير المنظور",emoji:"🔭",text:"أميل إلى الحل الأول الذي يخطر ببالي دون البحث عن منظورات أخرى.",pos:false},
+
+  {skill:"الملاحظة والتركيز",emoji:"🔬",text:"ألاحظ التفاصيل الدقيقة في البيئة المحيطة بي التي يغفل عنها الآخرون.",pos:true},
+  {skill:"الملاحظة والتركيز",emoji:"🔬",text:"أشتت انتباهي بسهولة وأجد صعوبة في التركيز على تفاصيل دقيقة.",pos:false},
+  {skill:"الملاحظة والتركيز",emoji:"🔬",text:"أستطيع ملاحظة الأنماط والتشابهات بين أشياء تبدو مختلفة للوهلة الأولى.",pos:true},
+  {skill:"الملاحظة والتركيز",emoji:"🔬",text:"أكتفي بالنظرة السطحية للأشياء دون التعمق في تفاصيلها.",pos:false},
+
+  {skill:"تحدي الافتراضات المسبقة",emoji:"⚡",text:"أتساءل دائماً لماذا تُنجز الأشياء بطريقة معينة وهل هناك طرق أفضل.",pos:true},
+  {skill:"تحدي الافتراضات المسبقة",emoji:"⚡",text:"أقبل معظم القواعد والأعراف السائدة دون الشك في مدى ملاءمتها.",pos:false},
+  {skill:"تحدي الافتراضات المسبقة",emoji:"⚡",text:"أتحدى الافتراضات المسبقة حتى عندما يبدو الأمر مستقراً وناجحاً.",pos:true},
+  {skill:"تحدي الافتراضات المسبقة",emoji:"⚡",text:"أشعر بعدم ارتياح عند التشكيك في المسلّمات المقبولة عموماً.",pos:false},
+
+  {skill:"توليد الاحتمالات",emoji:"🌊",text:"أستطيع توليد عدد كبير من الأفكار والحلول المتنوعة لأي مشكلة.",pos:true},
+  {skill:"توليد الاحتمالات",emoji:"🌊",text:"أتوقف عن البحث عن أفكار جديدة بمجرد أن أجد حلاً مقبولاً.",pos:false},
+  {skill:"توليد الاحتمالات",emoji:"🌊",text:"أجيد توليد بدائل متعددة ومتنوعة حتى في المواقف المقيّدة.",pos:true},
+  {skill:"توليد الاحتمالات",emoji:"🌊",text:"أجد صعوبة في التفكير خارج الإطار المألوف عند الحاجة لحلول إبداعية.",pos:false},
+
+  {skill:"ربط ومزج المفاهيم",emoji:"🔗",text:"أجيد ربط أفكار ومجالات مختلفة للوصول إلى حلول مبتكرة.",pos:true},
+  {skill:"ربط ومزج المفاهيم",emoji:"🔗",text:"أجد صعوبة في رؤية العلاقات بين أفكار تنتمي لمجالات مختلفة.",pos:false},
+  {skill:"ربط ومزج المفاهيم",emoji:"🔗",text:"أستمتع بمزج مفاهيم من تخصصات مختلفة للخروج بأفكار جديدة.",pos:true},
+  {skill:"ربط ومزج المفاهيم",emoji:"🔗",text:"أفضّل البقاء ضمن حدود تخصصي عند البحث عن حلول.",pos:false},
+
+  {skill:"التجريب والاحتفاء بالفشل",emoji:"🚀",text:"أنظر إلى الفشل باعتباره فرصة للتعلم لا سبباً للإحباط.",pos:true},
+  {skill:"التجريب والاحتفاء بالفشل",emoji:"🚀",text:"أتجنب تجربة أشياء جديدة خوفاً من الفشل أو الإحراج.",pos:false},
+  {skill:"التجريب والاحتفاء بالفشل",emoji:"🚀",text:"أشجع نفسي وأشجع الآخرين على التجريب حتى لو لم يكن النجاح مضموناً.",pos:true},
+  {skill:"التجريب والاحتفاء بالفشل",emoji:"🚀",text:"أفضّل الطرق المجرّبة والمضمونة على المغامرة بأساليب جديدة.",pos:false},
+];
+
+const SKILLS = ["خلق التوجه الإبداعي","تغيير المنظور","الملاحظة والتركيز","تحدي الافتراضات المسبقة","توليد الاحتمالات","ربط ومزج المفاهيم","التجريب والاحتفاء بالفشل"];
+const SKILL_EMOJIS = {"خلق التوجه الإبداعي":"🌟","تغيير المنظور":"🔭","الملاحظة والتركيز":"🔬","تحدي الافتراضات المسبقة":"⚡","توليد الاحتمالات":"🌊","ربط ومزج المفاهيم":"🔗","التجريب والاحتفاء بالفشل":"🚀"};
+
+const skillAdvice = {
+  "خلق التوجه الإبداعي":{
+    strength:"لديك توجه إبداعي راسخ — استثمره بإطلاق مشاريع أو مبادرات جديدة تُلهم من حولك، وشارك في مجتمعات الإبداع لتصبح مرجعاً يستفيد منه الآخرون.",
+    weakness:"ابدأ بتخصيص 10 دقائق يومياً للكتابة الحرة أو رسم أفكارك؛ هذه العادة البسيطة ستبني تدريجياً توجهك الإبداعي وتحوّله إلى عقلية راسخة."
+  },
+  "تغيير المنظور":{
+    strength:"قدرتك على تغيير المنظور ميزة نادرة — وظّفها في حل النزاعات والتفاوض، وساعد فريقك على رؤية التحديات من زوايا لم يلتفتوا إليها.",
+    weakness:"جرّب تمرين 'المحامي الشيطان': خذ أي رأي تؤمن به وحاول الدفاع عن نقيضه لمدة 5 دقائق يومياً؛ سيوسّع ذلك نطاق رؤيتك بشكل ملحوظ."
+  },
+  "الملاحظة والتركيز":{
+    strength:"حدة ملاحظتك مصدر ثري للإبداع — احتفظ بدفتر 'ملاحظات غريبة' لتدوين ما يلفت نظرك يومياً، وستكتشف أن هذه الملاحظات تتحول إلى أفكار مبتكرة.",
+    weakness:"مارس 'مشي بدون هاتف' لمدة 15 دقيقة يومياً وركّز على رصد 3 تفاصيل جديدة في محيطك؛ هذا التمرين يشحذ حواسك ويقوي قدرتك على الملاحظة."
+  },
+  "تحدي الافتراضات المسبقة":{
+    strength:"جرأتك على تحدي المسلّمات تجعلك عاملاً للتغيير — استخدم هذه الملكة في مراجعة الأنظمة والعمليات في بيئتك، وقترح بدائل مدعومة بالبيانات.",
+    weakness:"اسأل 'لماذا؟' خمس مرات متتالية لأي إجراء معتاد في حياتك المهنية؛ هذه التقنية البسيطة ستكشف افتراضات خفية كنت تقبلها دون وعي."
+  },
+  "توليد الاحتمالات":{
+    strength:"غزارة أفكارك ثروة حقيقية — طوّر نظاماً لتصفية وترتيب أولويات أفكارك الكثيرة، واستثمر هذه الطاقة في جلسات العصف الذهني مع الآخرين.",
+    weakness:"خصص 5 دقائق كل صباح لكتابة 10 أفكار — حتى لو كانت سخيفة أو غير عملية؛ الهدف تفكيك حاجز 'الحل الواحد' وتوسيع خيالك التوليدي."
+  },
+  "ربط ومزج المفاهيم":{
+    strength:"موهبتك في ربط المفاهيم تجعلك مبتكراً بطبيعتك — اقرأ في مجالات بعيدة عن تخصصك واستكشف كيف يمكن لكل مجال أن يُلهم الآخر.",
+    weakness:"اقرأ مقالة واحدة أسبوعياً من مجال مختلف تماماً عن مجالك، واكتب جملة واحدة عن كيفية تطبيق ما تعلّمته في عملك؛ الجسور تُبنى بخطوات صغيرة."
+  },
+  "التجريب والاحتفاء بالفشل":{
+    strength:"شجاعتك على التجريب تُعجّل نموّك — وثّق تجاربك وإخفاقاتك في 'مجلة تعلّم' شخصية، فهذا يحوّل كل فشل إلى رصيد معرفي يراكم الحكمة.",
+    weakness:"التزم بـ'تجربة صغيرة واحدة أسبوعياً' حيث يسمح الخطأ: غيّر طريقة عملك لمهمة واحدة، جرّب أداة جديدة، أو تعلّم مهارة صغيرة. الفشل الصغير يبني المناعة من الخوف الكبير."
+  }
+};
+
+const PERSONAS = [
+  {emoji:"🌀",title:"فوجادي",desc:"تمتلك عيناً استثنائية لرصد التفاصيل الخفية وتحويل المألوف إلى أرض خصبة للإبداع. أنت تعيش في حالة يقظة دائمة، تلتقط ما يفوت الآخرين وتُعيد تأطيره بمنظور جديد كلياً.",traits:["يقظة استثنائية","رؤية متعددة الأبعاد","إبداع مكثف"],cond:s=>s["الملاحظة والتركيز"]>=7.5&&s["تغيير المنظور"]>=7.5,color:"#7c5cfc",bg:"#ede9ff",
+    strengths:["قدرة نادرة على اكتشاف الفرص في ما يبدو عادياً","تحليل عميق للسياق قبل اتخاذ القرار"],weaknesses:["قد يستهلك وقتاً طويلاً في مرحلة الملاحظة قبل التحرك","صعوبة أحياناً في مشاركة رؤيته بشكل مفهوم للآخرين"]},
+  {emoji:"🚀",title:"المجرب الجريء",desc:"الفشل في قاموسك مجرد بيانات قيّمة، والمجهول أرض للمغامرة لا للخوف. تنطلق حيث يتردد الآخرون، وتحوّل كل تجربة — ناجحة أو خاسرة — إلى ركيزة نحو الابتكار.",traits:["جرأة في التجريب","تعلّم من الفشل","طاقة استكشافية"],cond:s=>s["التجريب والاحتفاء بالفشل"]>=7.5&&s["توليد الاحتمالات"]>=7.5,color:"#e85a00",bg:"#fff0e8",
+    strengths:["لا تتوقف عن التجربة حتى تصل للحل الأمثل","تُلهم الفريق بجرأتها وتكسر حاجز الخوف"],weaknesses:["قد تنتقل للتجربة التالية قبل استخلاص الدروس الكاملة","أحياناً تفتقر للصبر على التخطيط المنهجي"]},
+  {emoji:"⚡",title:"المحلل الناقد",desc:"عقلك آلة لاختبار الحقيقة — لا تقبل مسلّمة دون دليل ولا قاعدة دون مبرر. هذه الجرأة الفكرية هي ما يجعلك قادراً على إعادة اختراع الأنظمة من جذورها.",traits:["تفكير نقدي حاد","تحدي المسلّمات","إعادة هيكلة الأفكار"],cond:s=>s["تحدي الافتراضات المسبقة"]>=7.5&&s["خلق التوجه الإبداعي"]>=7,color:"#b45309",bg:"#fef9c3",
+    strengths:["يكشف الثغرات والافتراضات الخاطئة قبل أن تتحول لمشاكل","يطرح أسئلة تُجبر الفريق على التفكير بعمق أكبر"],weaknesses:["قد يُفرط في التشكيك مما يُبطئ اتخاذ القرار","أحياناً يُرسل رسائل سلبية دون قصد عند نقد الأفكار"]},
+  {emoji:"🔗",title:"الرابط الخلاق",desc:"تجمع بين عالمين لم يلتقيا من قبل فتُولد الجديد. عقلك شبكة روابط لا حدود لها — تسحب الإلهام من الموسيقى والعلم والتاريخ وتصنع منه حلولاً لم تخطر على بال.",traits:["تفكير متشعّب","ربط المجالات","إبداع هجين"],cond:s=>s["ربط ومزج المفاهيم"]>=7.5&&s["الملاحظة والتركيز"]>=6.5,color:"#0f766e",bg:"#e0f2f1",
+    strengths:["يرى الفرص التي تنشأ عند تقاطع المجالات المختلفة","يُثري الفريق بمنظور خارج حدود التخصص"],weaknesses:["قد تبدو أفكاره غير عملية أو بعيدة عن الواقع للآخرين","يحتاج وقتاً لترتيب وتوضيح أفكاره الكثيرة والمتفرعة"]},
+  {emoji:"🌊",title:"مولّد الاحتمالات",desc:"بينما يرى الآخرون حلاً واحداً، أنت ترى بحراً من الاحتمالات. طاقتك التوليدية لا تنضب، وقدرتك على التفكير خارج الصندوق تُعيد صياغة حدود الممكن.",traits:["تفكير توليدي","مرونة عالية","استكشاف الممكن"],cond:s=>s["توليد الاحتمالات"]>=7.5&&s["تحدي الافتراضات المسبقة"]>=6.5,color:"#1d6fb8",bg:"#e0f0ff",
+    strengths:["لا يعلق عند طريق مسدود بل يجد طرقاً بديلة دائماً","يُغني جلسات العصف الذهني بأفكار غير متوقعة"],weaknesses:["قد يصعب عليه الاختيار بين الخيارات الكثيرة","يحتاج لمن يساعده على تحويل الأفكار الوفيرة لخطوات قابلة للتنفيذ"]},
+  {emoji:"🌟",title:"صاحب التوجه الإبداعي",desc:"الإبداع بالنسبة لك ليس لحظة إلهام بل منهج حياة. تُشكّل بيئتك وعاداتك وعلاقاتك بوعي تام لتغذية عقلك الإبداعي باستمرار.",traits:["انضباط إبداعي","عادات استراتيجية","قيادة فكرية"],cond:s=>s["خلق التوجه الإبداعي"]>=7.5&&s["التجريب والاحتفاء بالفشل"]>=6.5,color:"#a05c00",bg:"#fef3c7",
+    strengths:["يُديم الإبداع ولا يتركه للصدفة أو الإلهام العارض","يبني ثقافة الإبداع في محيطه بالقدوة والالتزام"],weaknesses:["قد يُقيّد نفسه بمنهج محدد ويفوته إبداع العفوية","أحياناً يُبالغ في التخطيط على حساب التنفيذ السريع"]},
+  {emoji:"💎",title:"المبدع المتكامل",desc:"أنت نادر — مزيج متوازن من كل مهارات التفكير الإبداعي. تستطيع التبديل بسلاسة بين التحليل والإلهام، بين الجرأة والحكمة، وهذا التكامل يجعلك قائداً إبداعياً استثنائياً.",traits:["توازن بين التحليل والإلهام","قيادة إبداعية شاملة","تكيّف عالٍ"],cond:s=>SKILLS.filter(k=>s[k]>=7).length>=5,color:"#5c1d96",bg:"#f3e8ff",
+    strengths:["يُجيد توظيف أنسب المهارات الإبداعية حسب الموقف","يُلهم ويُحفّز الفرق بنماذج إبداعية متكاملة"],weaknesses:["قد لا يمتلك 'توقيعاً إبداعياً' واضحاً بسبب التنوع الكبير","أحياناً يجد صعوبة في التركيز على مجال واحد للتعمق فيه"]},
+  {emoji:"🌱",title:"المبدع الناشئ",desc:"رحلتك الإبداعية في أكثر مراحلها إثارة — مرحلة الاكتشاف والبناء. كل مهارة تطورها الآن تُضاعف إمكاناتك، وأمامك طريق رائع من النمو والتحوّل.",traits:["إمكانات واعدة","فضول متنامٍ","مرونة التعلّم"],cond:()=>true,color:"#166534",bg:"#dcfce7",
+    strengths:["لديه مرونة التعلّم وعقل منفتح على أساليب جديدة","الانطلاق من الصفر يتيح له بناء عادات إبداعية صحيحة"],weaknesses:["قد يفتقر لثقة بالنفس في طرح أفكاره أمام الآخرين","يحتاج لتوجيه منهجي لتسريع مسار تطوره الإبداعي"]}
+];
+
+const EXERCISES = {
+  "خلق التوجه الإبداعي":"ابدأ تحدي 'فكرة يومية': كل يوم لمدة 21 يوماً اكتب فكرة واحدة جديدة — ولو كانت بسيطة أو سخيفة. الهدف بناء عضلة الإبداع اليومي لا إنتاج أفكار عظيمة.",
+  "تغيير المنظور":"اختر هذا الأسبوع شخصاً مختلفاً تماماً عنك (في المهنة أو الثقافة أو الرأي) وحاول فهم كيف يرى مشكلة تواجهها. ثم اكتب ما تعلّمته في فقرة واحدة.",
+  "الملاحظة والتركيز":"مارس تمرين 'المشي الواعي' لمدة 15 دقيقة يومياً لأسبوع: امشِ بدون هاتف، وركّز على رصد 5 أشياء لم تلاحظها من قبل في محيطك المعتاد.",
+  "تحدي الافتراضات المسبقة":"اختر إجراءً روتينياً في عملك وطبّق عليه أسلوب 'لماذا خمس مرات': اسأل لماذا نفعل هذا؟ ثم اسأل لماذا للإجابة، وهكذا خمس مرات. ستُدهشك ما ستكتشفه.",
+  "توليد الاحتمالات":"مارس تمرين SCAMPER على مشكلة تواجهها: كيف تُبدّلها؟ تجمعها؟ تُكيّفها؟ تُعدّلها؟ تستخدمها لغرض آخر؟ تحذف جزءاً منها؟ تعكسها؟",
+  "ربط ومزج المفاهيم":"اقرأ هذا الأسبوع مقالاً من مجال مختلف تماماً عن مجالك (فن، علم، تاريخ، رياضة) ثم اكتب كيف يمكن تطبيق 3 أفكار منه في عملك الحالي.",
+  "التجريب والاحتفاء بالفشل":"التزم بـ'تجربة آمنة واحدة أسبوعياً': جرّب طريقة مختلفة لإنجاز مهمة معتادة. وثّق النتيجة — نجاحاً أو إخفاقاً — واستخلص منها درساً واحداً."
+};
+
+let currentQ = 0;
+let answers = new Array(28).fill(null);
+let userName = '', userEmail = '', userJob = '';
+
+function goToQuestions(){
+  showPage('page-questions');
+  renderQ(0);
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function renderQ(i){
+  currentQ = i;
+  const q = QUESTIONS[i];
+  document.getElementById('q-skill-label').textContent = q.emoji+' '+q.skill;
+  document.getElementById('q-num').textContent = 'السؤال '+(i+1);
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-counter').textContent = 'السؤال '+(i+1)+' من 28';
+  document.getElementById('q-progress').style.width = (((i+1)/28)*100)+'%';
+
+  const opts = document.getElementById('q-options');
+  const labels = ['غير موافق بشدة','غير موافق','محايد','موافق','موافق بشدة'];
+  opts.innerHTML = '';
+  for(let v=1;v<=5;v++){
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    if(answers[i]===v) btn.classList.add('sel-'+v);
+    btn.innerHTML = `<span class="opt-num">${v}</span><span class="opt-label">${labels[v-1]}</span>`;
+    btn.onclick = ()=>selectAnswer(i,v);
+    opts.appendChild(btn);
+  }
+  document.getElementById('btn-prev').disabled = i===0;
+  document.getElementById('btn-next').disabled = answers[i]===null;
+  document.getElementById('btn-next').textContent = i===27 ? 'إنهاء الاختبار ✓' : 'التالي';
+}
+
+function selectAnswer(i,v){
+  answers[i] = v;
+  document.querySelectorAll('.opt-btn').forEach((btn,idx)=>{
+    btn.className = 'opt-btn';
+    if(idx+1===v) btn.classList.add('sel-'+v);
+  });
+  document.getElementById('btn-next').disabled = false;
+}
+
+function nextQ(){
+  if(answers[currentQ]===null) return;
+  if(currentQ===27){
+    showPage('page-data');
+  } else {
+    renderQ(currentQ+1);
+  }
+}
+
+function prevQ(){
+  if(currentQ>0) renderQ(currentQ-1);
+}
+
+function submitData(){
+  const name = document.getElementById('inp-name').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  if(!name||!email){
+    document.getElementById('data-err').textContent = 'يرجى ملء الاسم والبريد الإلكتروني';
+    return;
+  }
+  userName = name; userEmail = email; userJob = document.getElementById('inp-job').value.trim();
+  showPage('page-results');
+  buildResults();
+}
+
+function calcScores(){
+  const scores = {};
+  SKILLS.forEach(skill=>{
+    const qs = QUESTIONS.filter(q=>q.skill===skill);
+    const vals = qs.map((q,i)=>{
+      const idx = QUESTIONS.indexOf(q);
+      let v = answers[idx]||3;
+      if(!q.pos) v = 6-v;
+      return v;
+    });
+    const avg = vals.reduce((a,b)=>a+b,0)/4;
+    scores[skill] = parseFloat(((( avg-1)/4)*10).toFixed(2));
+  });
+  return scores;
+}
+
+function getPersona(scores){
+  for(const p of PERSONAS){
+    if(p.cond(scores)) return p;
+  }
+  return PERSONAS[PERSONAS.length-1];
+}
+
+function getLevel(total){
+  if(total>=56) return {label:'متميز',bg:'#dcfce7',color:'#14532d'};
+  if(total>=42) return {label:'متقدم',bg:'#dbeafe',color:'#1e3a5f'};
+  if(total>=28) return {label:'جيد',bg:'#fef9c3',color:'#854d0e'};
+  return {label:'في طور النمو',bg:'#fee2e2',color:'#991b1b'};
+}
+
+function barColor(score){
+  if(score>=7) return '#22c55e';
+  if(score>=5) return '#f0b429';
+  return '#ef4444';
+}
+
+function buildResults(){
+  const scores = calcScores();
+  const total = parseFloat(SKILLS.reduce((a,k)=>a+scores[k],0).toFixed(1));
+  const persona = getPersona(scores);
+  const level = getLevel(total);
+
+  document.getElementById('res-emoji').textContent = persona.emoji;
+  document.getElementById('res-persona-title').textContent = persona.title;
+  document.getElementById('res-total').textContent = total;
+  const lb = document.getElementById('res-level');
+  lb.textContent = level.label;
+  lb.style.background = level.bg; lb.style.color = level.color;
+
+  buildRadar(scores);
+  buildSkillBars(scores);
+  buildPersonaCard(persona);
+  buildSW(persona);
+  buildExercise(scores);
+  callAI(scores, persona, total);
+  // إرسال تلقائي بعد 3 ثواني (بعد ما الصفحة تتبني)
+  setTimeout(()=>sendResultsEmail(persona.title, total, level.label), 3000);
+}
+
+function buildRadar(scores){
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  new Chart(ctx,{
+    type:'radar',
+    data:{
+      labels:SKILLS.map(s=>SKILL_EMOJIS[s]+' '+s),
+      datasets:[{
+        data:SKILLS.map(k=>scores[k]),
+        backgroundColor:'rgba(168,85,247,.2)',
+        borderColor:'rgba(168,85,247,.9)',
+        borderWidth:2.5,
+        pointBackgroundColor:'#a855f7',
+        pointBorderColor:'#ffffff',
+        pointBorderWidth:1.5,
+        pointRadius:5
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{r:{
+        min:0,max:10,
+        ticks:{display:false},
+        grid:{color:'rgba(168,85,247,.2)'},
+        angleLines:{color:'rgba(168,85,247,.15)'},
+        pointLabels:{
+          font:{family:'Tajawal',size:12,weight:'700'},
+          color:'#e0d8ff'
+        }
+      }}
+    }
+  });
+}
+
+function buildSkillBars(scores){
+  const grid = document.getElementById('skills-grid');
+  grid.innerHTML = '';
+  SKILLS.forEach(skill=>{
+    const sc = scores[skill];
+    let adviceHtml = '';
+    const advice = skillAdvice[skill];
+    if(sc>=7){
+      adviceHtml = `<div class="skill-advice strength"><span class="advice-icon">💪</span><span>${advice.strength}</span></div>`;
+    } else if(sc<6){
+      adviceHtml = `<div class="skill-advice weakness"><span class="advice-icon">🎯</span><span>${advice.weakness}</span></div>`;
+    } else {
+      adviceHtml = `<div class="skill-advice neutral"><span class="advice-icon">💡</span><span>${advice.strength}</span></div>`;
+    }
+    grid.innerHTML += `
+      <div class="skill-bar-card">
+        <div class="skill-bar-top">
+          <span class="skill-name">${SKILL_EMOJIS[skill]} ${skill}</span>
+          <span class="skill-score">${sc}/10</span>
+        </div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:${sc*10}%;background:${barColor(sc)}"></div></div>
+        ${adviceHtml}
+        <div id="ai-skill-${SKILLS.indexOf(skill)}" style="margin-top:.6rem;font-size:13px;color:var(--text3);font-style:italic"></div>
+      </div>`;
+  });
+}
+
+function buildPersonaCard(persona){
+  document.getElementById('persona-card').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.2rem">
+      <span style="font-size:2.5rem">${persona.emoji}</span>
+      <div>
+        <h3 style="font-size:1.3rem;font-weight:800;color:var(--text)">${persona.title}</h3>
+        <div class="traits-row" style="margin-top:6px;margin-bottom:0">${persona.traits.map(t=>`<span class="trait-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+    <p class="persona-desc">${persona.desc}</p>
+    <div class="opening-text" id="opening-text">
+      <div class="ai-loading" id="opening-loading">
+        <div class="dot-spin"><span></span><span></span><span></span></div>
+        جاري توليد رسالتك الشخصية...
+      </div>
+    </div>`;
+}
+
+function buildSW(persona){
+  const grid = document.getElementById('sw-grid');
+  grid.innerHTML = '';
+  persona.strengths.forEach(s=>{
+    grid.innerHTML += `<div class="sw-card str"><h4>✅ نقطة قوة</h4><p>${s}</p><p class="sw-detail" id="sw-str-${persona.strengths.indexOf(s)}"></p></div>`;
+  });
+  persona.weaknesses.forEach(w=>{
+    grid.innerHTML += `<div class="sw-card weak"><h4>⚠️ نقطة ضعف</h4><p>${w}</p><p class="sw-detail" id="sw-weak-${persona.weaknesses.indexOf(w)}"></p></div>`;
+  });
+}
+
+function buildExercise(scores){
+  const weakest = SKILLS.reduce((a,b)=>scores[a]<scores[b]?a:b);
+  document.getElementById('exercise-box').innerHTML = `
+    <div class="exercise-title">🏋️ تمرين لتقوية أضعف مهارة: ${SKILL_EMOJIS[weakest]} ${weakest}</div>
+    <p class="exercise-text">${EXERCISES[weakest]}</p>`;
+}
+
+async function callAI(scores,persona,total){
+  const strongest = SKILLS.reduce((a,b)=>scores[a]>scores[b]?a:b);
+  const weakest = SKILLS.reduce((a,b)=>scores[a]<scores[b]?a:b);
+  const scoresText = SKILLS.map(k=>`${k}: ${scores[k]}/10`).join('، ');
+
+  const prompt = `أنت محلل إبداعي متخصص. المتدرب اسمه ${userName}${userJob?'، مسمى وظيفي: '+userJob:''}.
+نتائجه: ${scoresText}. المجموع: ${total}/70. شخصيته الإبداعية: ${persona.title}.
+
+أعطني JSON بالحقول التالية فقط (بالعربية):
+{
+  "opening": "جملة افتتاحية شخصية بالاسم (جملة واحدة)",
+  "fingerprint_summary": "فقرة 3-4 جمل تصف بصمته الإبداعية بناءً على درجاته الفعلية",
+  "skill_analyses": {"اسم كل مهارة": "جملتان عن أدائه في هذه المهارة تحديداً"},
+  "strength_details": ["تفصيل قصير لنقطة قوة الشخصية الأولى","تفصيل لنقطة قوة الشخصية الثانية"],
+  "weakness_details": ["تفصيل قصير لنقطة ضعف الشخصية الأولى","تفصيل لنقطة ضعف الشخصية الثانية"]
+}
+أعطني JSON فقط بدون أي نص إضافي.`;
+
+  try{
+    const resp = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-6",
+        max_tokens:1000,
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+    const data = await resp.json();
+    const raw = data.content.map(c=>c.text||'').join('');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+
+    document.getElementById('opening-loading').style.display='none';
+    document.getElementById('opening-text').innerHTML = `<p style="font-size:15px;color:var(--text);line-height:1.8">${parsed.opening||''}</p>`;
+
+    document.getElementById('fp-loading').style.display='none';
+    document.getElementById('fingerprint-text').style.display='block';
+    document.getElementById('fingerprint-text').textContent = parsed.fingerprint_summary||'';
+
+    if(parsed.skill_analyses){
+      SKILLS.forEach((skill,i)=>{
+        const el = document.getElementById('ai-skill-'+i);
+        if(el && parsed.skill_analyses[skill]) el.textContent = parsed.skill_analyses[skill];
+      });
+    }
+    if(parsed.strength_details){
+      parsed.strength_details.forEach((d,i)=>{
+        const el = document.getElementById('sw-str-'+i);
+        if(el) el.textContent = d;
+      });
+    }
+    if(parsed.weakness_details){
+      parsed.weakness_details.forEach((d,i)=>{
+        const el = document.getElementById('sw-weak-'+i);
+        if(el) el.textContent = d;
+      });
+    }
+  } catch(e){
+    document.getElementById('opening-loading').style.display='none';
+    const persona2 = PERSONAS.find(p=>p.title===document.getElementById('res-persona-title').textContent);
+    document.getElementById('opening-text').innerHTML = `<p style="font-size:15px;color:var(--text);line-height:1.8">أهلاً ${userName}! نتائجك تكشف عن شخصية إبداعية متميزة.</p>`;
+    document.getElementById('fp-loading').style.display='none';
+    document.getElementById('fingerprint-text').style.display='block';
+    document.getElementById('fingerprint-text').textContent = `بناءً على إجاباتك، تمتلك مزيجاً فريداً من المهارات الإبداعية يجعل منك شخصية مميزة.`;
+  }
+}
+
+// ===== Google Apps Script URL — ضعي الرابط هنا بعد النشر =====
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbz-C9ngOl3DPUwax0FdW9IAkPq-RIueviK43pGPbJEAetNAi5zJkNumcjwnpMqPnWwS/exec';
+// ==============================================================
+
+function setEmailStatus(icon, msg, color){
+  const el = document.getElementById('email-status');
+  el.style.color = color;
+  el.innerHTML = `<span style="font-size:18px">${icon}</span> <span>${msg}</span>`;
+}
+
+async function sendResultsEmail(personaTitle, totalScore, levelText){
+  try {
+    setEmailStatus('⏳','جاري إنشاء PDF وإرساله...','#a090c8');
+
+    // 1. توليد PDF
+    const {jsPDF} = window.jspdf;
+    const resultsEl = document.getElementById('page-results');
+    const canvas = await html2canvas(resultsEl, {
+      scale:1.5, useCORS:true,
+      backgroundColor:'#020207',
+      scrollY:0, windowWidth:900,
+    });
+    const imgData = canvas.toDataURL('image/jpeg', 0.82);
+    const pdf = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgH = (canvas.height * pageW) / canvas.width;
+    let y=0, remaining=imgH;
+    while(remaining>0){
+      pdf.addImage(imgData,'JPEG',0,-y,pageW,imgH);
+      remaining-=pageH; y+=pageH;
+      if(remaining>0) pdf.addPage();
+    }
+    const pdfBase64 = pdf.output('datauristring').split(',')[1];
+
+    if(GAS_URL==='https://script.google.com/macros/s/AKfycbz-C9ngOl3DPUwax0FdW9IAkPq-RIueviK43pGPbJEAetNAi5zJkNumcjwnpMqPnWwS/exec'){
+      setEmailStatus('⚠️','أضيفي رابط Google Apps Script في الكود لإرسال الإيميل تلقائياً','#fcd34d');
+      return;
+    }
+
+    // 2. إرسال لـ Google Apps Script
+    setEmailStatus('📤','جاري إرسال الإيميل...','#a090c8');
+    const payload = {
+      name:      userName,
+      email:     userEmail,
+      job:       userJob||'',
+      persona:   personaTitle,
+      score:     String(totalScore),
+      level:     levelText,
+      pdfBase64: pdfBase64,
+      fileName:  `نتيجة-${userName}-IdeaMorphing.pdf`,
+    };
+    const resp = await fetch(GAS_URL,{method:'POST',body:JSON.stringify(payload)});
+    const result = await resp.json();
+    if(result.status!=='ok') throw new Error(result.error||'فشل');
+
+    setEmailStatus('✅',`تم إرسال النتيجة إلى ${userEmail}`,'#86efac');
+
+  } catch(err){
+    console.error(err);
+    setEmailStatus('⚠️','تعذّر إرسال الإيميل — تحققي من رابط Apps Script','#fca5a5');
+  }
+}
+</script>
+</body>
+</html>
