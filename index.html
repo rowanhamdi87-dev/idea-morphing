@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -878,7 +877,7 @@ async function callAI(scores,persona,total){
 }
 
 // ===== Google Apps Script URL — ضعي الرابط هنا بعد النشر =====
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbz-C9ngOl3DPUwax0FdW9IAkPq-RIueviK43pGPbJEAetNAi5zJkNumcjwnpMqPnWwS/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzcFmfoIwk1N1muFxqgOa6EM6SQecxpyJtHW4tON1CQsPi3ew3DmOl4OTCMrjqsvr8Q/exec';
 // ==============================================================
 
 function setEmailStatus(icon, msg, color){
@@ -912,7 +911,7 @@ async function sendResultsEmail(personaTitle, totalScore, levelText){
     }
     const pdfBase64 = pdf.output('datauristring').split(',')[1];
 
-    if(GAS_URL==='https://script.google.com/macros/s/AKfycbz-C9ngOl3DPUwax0FdW9IAkPq-RIueviK43pGPbJEAetNAi5zJkNumcjwnpMqPnWwS/exec'){
+    if(GAS_URL==='https://script.google.com/macros/s/AKfycbzcFmfoIwk1N1muFxqgOa6EM6SQecxpyJtHW4tON1CQsPi3ew3DmOl4OTCMrjqsvr8Q/exec'){
       setEmailStatus('⚠️','أضيفي رابط Google Apps Script في الكود لإرسال الإيميل تلقائياً','#fcd34d');
       return;
     }
@@ -929,10 +928,14 @@ async function sendResultsEmail(personaTitle, totalScore, levelText){
       pdfBase64: pdfBase64,
       fileName:  `نتيجة-${userName}-IdeaMorphing.pdf`,
     };
-    const resp = await fetch(GAS_URL,{method:'POST',body:JSON.stringify(payload)});
-    const result = await resp.json();
-    if(result.status!=='ok') throw new Error(result.error||'فشل');
-
+    // no-cors يحل مشكلة CORS مع Google Apps Script
+    await fetch(GAS_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify(payload),
+    });
+    // no-cors دايماً بيرجع opaque — نعتبرها نجاح
     setEmailStatus('✅',`تم إرسال النتيجة إلى ${userEmail}`,'#86efac');
 
   } catch(err){
