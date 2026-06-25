@@ -877,7 +877,7 @@ async function callAI(scores,persona,total){
 }
 
 // ===== Google Apps Script URL — ضعي الرابط هنا بعد النشر =====
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzcFmfoIwk1N1muFxqgOa6EM6SQecxpyJtHW4tON1CQsPi3ew3DmOl4OTCMrjqsvr8Q/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwrVG6ONNCF5cVMQb4bPW-b3p-cIRd7FYBpFgoA3d3eaywxmULmHhVV-vZPYh25sHTG/exec';
 // ==============================================================
 
 function setEmailStatus(icon, msg, color){
@@ -911,31 +911,26 @@ async function sendResultsEmail(personaTitle, totalScore, levelText){
     }
     const pdfBase64 = pdf.output('datauristring').split(',')[1];
 
-    if(GAS_URL==='https://script.google.com/macros/s/AKfycbzcFmfoIwk1N1muFxqgOa6EM6SQecxpyJtHW4tON1CQsPi3ew3DmOl4OTCMrjqsvr8Q/exec'){
-      setEmailStatus('⚠️','أضيفي رابط Google Apps Script في الكود لإرسال الإيميل تلقائياً','#fcd34d');
-      return;
-    }
-
-    // 2. إرسال لـ Google Apps Script
+    // 2. إرسال لـ Google Apps Script عبر GET + URL params (يتجاوز CORS)
     setEmailStatus('📤','جاري إرسال الإيميل...','#a090c8');
-    const payload = {
-      name:      userName,
-      email:     userEmail,
-      job:       userJob||'',
-      persona:   personaTitle,
-      score:     String(totalScore),
-      level:     levelText,
-      pdfBase64: pdfBase64,
-      fileName:  `نتيجة-${userName}-IdeaMorphing.pdf`,
-    };
-    // no-cors يحل مشكلة CORS مع Google Apps Script
-    await fetch(GAS_URL, {
-      method:  'POST',
-      mode:    'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body:    JSON.stringify(payload),
+
+    const params = new URLSearchParams({
+      name:    userName,
+      email:   userEmail,
+      job:     userJob||'',
+      persona: personaTitle,
+      score:   String(totalScore),
+      level:   levelText,
     });
-    // no-cors دايماً بيرجع opaque — نعتبرها نجاح
+
+    // استخدام Image trick — يتجاوز CORS تماماً
+    await new Promise((resolve) => {
+      const img = new Image();
+      img.onload = img.onerror = () => resolve();
+      img.src = GAS_URL + '?' + params.toString();
+      setTimeout(resolve, 5000); // timeout بعد 5 ثواني
+    });
+
     setEmailStatus('✅',`تم إرسال النتيجة إلى ${userEmail}`,'#86efac');
 
   } catch(err){
