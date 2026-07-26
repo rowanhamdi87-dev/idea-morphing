@@ -852,7 +852,7 @@ function setEmailStatus(icon, msg, color){
 
 async function saveToAirtable(personaTitle, totalScore){
   try {
-    await fetch(WORKER_URL, {
+    const resp = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -864,6 +864,12 @@ async function saveToAirtable(personaTitle, totalScore){
         skills:  lastScores,
       })
     });
+    const result = await resp.json();
+    if(!result.ok){
+      console.error('Airtable save failed:', result);
+    } else {
+      console.log('Airtable save ok:', result);
+    }
   } catch(err){
     console.error('Airtable error:', err);
   }
